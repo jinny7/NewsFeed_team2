@@ -1,5 +1,6 @@
 package com.sparta.newspeed.config;
 
+import com.sparta.newspeed.filter.CustomLogoutFilter;
 import com.sparta.newspeed.filter.JWTFilter;
 import com.sparta.newspeed.filter.LoginFilter;
 import com.sparta.newspeed.repository.RefreshRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 
 @Configuration
@@ -70,6 +72,10 @@ public class SecurityConfig {
         //AuthenticationManager()와 JWTUtil 인수 전달
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+
+        //LogoutFilter 등록
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session
