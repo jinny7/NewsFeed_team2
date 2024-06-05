@@ -41,6 +41,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             FilterChain chain,
             Authentication authentication) {
 
+        System.out.println("Successfully authenticated user: " + authentication.getName());
     }
 
     //로그인 실패시 실행하는 메소드
@@ -50,5 +51,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response,
             AuthenticationException failed) {
 
+        System.out.println("Unsuccessful authentication: " + failed.getMessage());
     }
 }

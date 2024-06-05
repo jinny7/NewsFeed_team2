@@ -1,6 +1,6 @@
 package com.sparta.newspeed.service;
 
-import com.sparta.newspeed.dto.JoinDto;
+import com.sparta.newspeed.dto.SignupDto;
 import com.sparta.newspeed.entity.User;
 import com.sparta.newspeed.repository.UserRepository;
 
@@ -8,20 +8,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JoinService {
+public class SignupService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SignupService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public void signup(JoinDto joinDto) {
+    public void signup(SignupDto signupDto) {
 
-        String username = joinDto.getUsername();
-        String password = joinDto.getPassword();
+        String username = signupDto.getUsername();
+        String password = signupDto.getPassword();
 
         //유저이름이 존재하는 지확인
         Boolean isExist = userRepository.existsByUsername(username);
