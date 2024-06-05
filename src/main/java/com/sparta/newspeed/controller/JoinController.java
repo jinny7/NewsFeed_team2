@@ -1,7 +1,7 @@
 package com.sparta.newspeed.controller;
 
-import com.sparta.newspeed.dto.SignupDto;
-import com.sparta.newspeed.service.SignupService;
+import com.sparta.newspeed.dto.JoinDTO;
+import com.sparta.newspeed.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,16 +10,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 public class JoinController {
 
-    private final SignupService signupService;
+    private final JoinService joinService;
 
-    public JoinController(SignupService signupService) {
-        this.signupService = signupService;
+    public JoinController(JoinService joinService) {
+
+        this.joinService = joinService;
     }
 
-    @PostMapping ("/signup")
-    public String signup (SignupDto signupDto) {
+    @PostMapping("/join")
+    public String joinProcess(JoinDTO joinDTO) {
 
-        signupService.signup(signupDto);
+        System.out.println(joinDTO.getUsername());
+        joinService.joinProcess(joinDTO);
 
         return "ok";
     }

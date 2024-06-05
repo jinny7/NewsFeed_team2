@@ -1,9 +1,8 @@
 package com.sparta.newspeed.config;
 
-import com.sparta.newspeed.filter.JwtFilter;
-import com.sparta.newspeed.jwt.JwtUtil;
+import com.sparta.newspeed.filter.JWTFilter;
 import com.sparta.newspeed.filter.LoginFilter;
-import lombok.RequiredArgsConstructor;
+import com.sparta.newspeed.util.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,23 +14,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JwtUtil jwtUtil;
+    //JWTUtil 주입
+    private final JWTUtil jwtUtil;
 
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 
-    //AuthenticationManager Bean 등록
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
+    }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 
         return configuration.getAuthenticationManager();
     }
 
-    //패스워드 암호화
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
@@ -41,41 +44,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        //csrf disable
+
         http
                 .csrf((auth) -> auth.disable());
 
-        //From 로그인 방식 disable
         http
                 .formLogin((auth) -> auth.disable());
 
-        //http basic 인증 방식 disable
         http
                 .httpBasic((auth) -> auth.disable());
 
-        //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/signup").permitAll()
+                        .requestMatchers("/login", "/", "/join").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
 
         //JWTFilter 등록
         http
-                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
-        //필터 추가 LoginFilter()는 인자를 받음
+        //AuthenticationManager()와 JWTUtil 인수 전달
         http
-                .addFilterAt(new LoginFilter(
-                        authenticationManager(authenticationConfiguration),jwtUtil),
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-        //세션 설정
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
 
         return http.build();
     }

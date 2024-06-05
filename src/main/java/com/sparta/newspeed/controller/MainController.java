@@ -17,7 +17,7 @@ public class MainController {
     @GetMapping("/")
     public String mainP() {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -26,7 +26,6 @@ public class MainController {
         GrantedAuthority auth = iter.next();
         String role = auth.getAuthority();
 
-
-        return "Main Controller : "+username + role;
+        return "Main Controller : "+name + role;
     }
 }
