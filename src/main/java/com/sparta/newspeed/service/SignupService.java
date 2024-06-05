@@ -22,10 +22,9 @@ public class SignupService {
 
         String username = signupDto.getUsername();
         String password = signupDto.getPassword();
-
+        String email = signupDto.getEmail();
         //유저이름이 존재하는 지확인
         Boolean isExist = userRepository.existsByUsername(username);
-
         if(isExist){
 
             return;
@@ -35,6 +34,7 @@ public class SignupService {
 
         user.setUsername(username);
         user.setPassword(bCryptPasswordEncoder.encode(password));
+        user.setEmail(email);
         user.setRole("ROLE_ADMIN");
 
         userRepository.save(user);

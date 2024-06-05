@@ -1,6 +1,8 @@
 package com.sparta.newspeed.config;
 
-import com.sparta.newspeed.jwt.LoginFilter;
+import com.sparta.newspeed.filter.JwtFilter;
+import com.sparta.newspeed.jwt.JwtUtil;
+import com.sparta.newspeed.filter.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtUtil jwtUtil;
 
 
     //AuthenticationManager Bean 등록
@@ -57,10 +60,14 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
+        //JWTFilter 등록
+        http
+                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+
         //필터 추가 LoginFilter()는 인자를 받음
         http
                 .addFilterAt(new LoginFilter(
-                        authenticationManager(authenticationConfiguration)),
+                        authenticationManager(authenticationConfiguration),jwtUtil),
                         UsernamePasswordAuthenticationFilter.class
                 );
 
