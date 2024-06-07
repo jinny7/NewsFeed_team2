@@ -1,7 +1,6 @@
 package com.sparta.newspeed.controller;
 
 import com.sparta.newspeed.dto.NewsFeedCreateRequest;
-import com.sparta.newspeed.dto.NewsFeedDeleteRequest;
 import com.sparta.newspeed.dto.NewsFeedResponse;
 import com.sparta.newspeed.service.NewsFeedService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,11 @@ public class NewsFeedController {
         return ResponseEntity.ok(response);
     }
 
-//U
+    @PutMapping("/{newsFeedId}")
+    public void update(@PathVariable(name = "newsFeedId") Long newsFeedId,
+                       @RequestBody NewsFeedCreateRequest request) {
+        newsFeedService.update(newsFeedId, request);
+    }
 
     @DeleteMapping("/{newsFeedId}")
     public ResponseEntity<String> deleteByID(@PathVariable(name = "newsFeedId") Long newsFeedId) {

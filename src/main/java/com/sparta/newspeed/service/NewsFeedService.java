@@ -1,7 +1,7 @@
 package com.sparta.newspeed.service;
 
 import com.sparta.newspeed.dto.NewsFeedCreateRequest;
-import com.sparta.newspeed.dto.NewsFeedDeleteRequest;
+//import com.sparta.newspeed.dto.NewsFeedDeleteRequest;
 import com.sparta.newspeed.dto.NewsFeedResponse;
 import com.sparta.newspeed.entity.NewsFeed;
 import com.sparta.newspeed.entity.User;
@@ -55,5 +55,11 @@ public class NewsFeedService {
             newsFeedResponseList.add(response);
         }
         return newsFeedResponseList;
+    }
+
+    public void update(Long newsFeedId, NewsFeedCreateRequest request) {
+        NewsFeed newsFeed = findNewsFeedById(newsFeedId);
+        newsFeed.setContents(request.getContents());
+        repository.save(newsFeed);
     }
 }
